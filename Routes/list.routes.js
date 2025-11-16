@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const ListController = require('../Controllers/list.controller');
-const authMiddleware = require('../Middleware/auth');
+const authMiddleware = require('../MiddleWare/auth');
 //const { requireRole } = require('../middleware/teamRoleMiddleware'); // if you want role checks
 
 // Basic:

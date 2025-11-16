@@ -2,7 +2,7 @@
 // Usage: const limiter = createRateLimiter({ windowMs: 10*60*1000, max: 5 });
 // app.post('/login', limiter, handler);
 
-function createRateLimiter({ windowMs = 10 * 60 * 1000, max = 5, message }) {
+const createRateLimiter = function({ windowMs = 10 * 60 * 1000, max = 5, message }) {
   // store: Map<key, { hits: number, firstSeen: timestamp }>
   const store = new Map();
 

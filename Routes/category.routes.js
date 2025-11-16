@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 const CategoryController = require("../Controllers/category.controller");
-const authMiddleware = require("../Middleware/auth");
+const authMiddleware = require("../MiddleWare/auth");
 
 // protected routes
 router.post("/", authMiddleware, CategoryController.addCategory);

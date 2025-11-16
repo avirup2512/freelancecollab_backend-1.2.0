@@ -4,7 +4,7 @@ const projectPermission = require("../MiddleWare/project.middleware");
 const express = require('express');
 const router = express.Router();
 const ProjectController = require('../controllers/project.controller');
-const authMiddleware = require('../Middleware/auth');
+const authMiddleware = require('../MiddleWare/auth');
 // optional role middleware: const { requireRole } = require('../middleware/teamRoleMiddleware');
 
 router.post('/', authMiddleware, ProjectController.createProject); // create

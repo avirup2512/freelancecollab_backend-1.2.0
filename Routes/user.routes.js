@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const UserController = require('../Controllers/user.controller');
-const createRateLimiter = require('../Middleware/rateLimiter');
+const createRateLimiter = require('../MiddleWare/rateLimiter');
 const authMiddleware = require('../Middleware/auth');
 const checkJWT = require('../Middleware/JWT');
 // config limiters

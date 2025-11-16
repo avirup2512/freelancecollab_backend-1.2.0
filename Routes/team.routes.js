@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require('../Middleware/auth');
+const authMiddleware = require('../MiddleWare/auth');
 const teamController = require('../Controllers/team.controller');
-const { requireAuth } = require("../Middleware/auth");
-const { requireRole } = require("../Middleware/teamRoleMiddleware");
+const { requireAuth } = require("../MiddleWare/auth");
+const { requireRole } = require("../MiddleWare/teamRoleMiddleware");
 
 
 router.post('/create-team', authMiddleware, teamController.createTeam);

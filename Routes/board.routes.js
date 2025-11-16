@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const BoardController = require("../Controllers/board.controller");
-const auth = require("../Middleware/auth");
+const auth = require("../MiddleWare/auth");
 const boardPermission = require("../Middleware/board.middleware");
 
 // CREATE
