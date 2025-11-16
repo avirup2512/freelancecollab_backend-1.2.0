@@ -1,7 +1,13 @@
 // initTables.js
 const mysql = require("mysql");
 const createQuery = require("./createQuery"); // your file
+const connection = require('../DB/db');
 
+function sqlquery(q, params = []) {
+    let con = new connection(mysql);
+    let connectionObject = con.getConnection();
+    return  con.queryByArray(connectionObject,q,params)
+}
 // Ordered tables based on FK dependencies
 const orderedTables = [
   // 1) Core user system
@@ -9,6 +15,11 @@ const orderedTables = [
   "createRoleTable",
   "createUserTypeTable",
   "createPriority",
+
+  // 5) Teams + team roles
+  "createTeams",
+  "createTeamsMember",
+  "createTeamInvites",
 
   // 2) Projects first
   "createTeamRole",
@@ -21,11 +32,6 @@ const orderedTables = [
   // 4) User <-> Role <-> Project relations
   "createUserRoleTable",
   "createProjectUserTable",
-
-  // 5) Teams + team roles
-  "createTeams",
-  "createTeamsMember",
-  "createTeamInvites",
 
   // 6) Team <-> Project mapping
   "createProjectTeam",
@@ -115,7 +121,7 @@ async function initTables() {
 
     try {
       console.log(`⏳ Creating table: ${key}`);
-      await connection.query(query);
+      await sqlquery(query,[]);
       console.log(`✅ ${key} created`);
     } catch (err) {
       console.error(`❌ Failed creating ${key}`);
