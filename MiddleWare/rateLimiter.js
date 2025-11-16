@@ -45,4 +45,4 @@ function createRateLimiter({ windowMs = 10 * 60 * 1000, max = 5, message }) {
   };
 }
 
-module.exports = { createRateLimiter };
+module.exports = createRateLimiter;
