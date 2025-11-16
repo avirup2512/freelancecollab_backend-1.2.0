@@ -36,7 +36,7 @@ var connection = (function () {
     });
   };
   mysqlConnectionInstance.prototype.getConnection = function () {
-    return this.configure("localhost", "root", "25126631", `kanban_saas`, 3306);
+    return this.configure(process.env.DB_HOST || 'localhost', process.env.DB_USER || "root", process.env.DB_PASSWORD || "25126631", process.env.DB_NAME || `kanban_saas`, 3306);
   };
 
   mysqlConnectionInstance.prototype.connect = function (con) {
