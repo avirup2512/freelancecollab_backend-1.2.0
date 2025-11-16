@@ -101,13 +101,6 @@ const orderedTables = [
 ];
 
 async function initTables() {
-  const connection = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "25126631" ,
-    database: "kanban_saas",
-    multipleStatements: true
-  });
 
   console.log("\n🚀 Initializing database tables...\n");
 
@@ -129,9 +122,7 @@ async function initTables() {
       process.exit(1);
     }
   }
-
   console.log("\n🎉 All tables created successfully!\n");
-  await connection.end();
 }
 
 // initTables();
