@@ -1,4 +1,4 @@
-const db = require("../db/db");
+const pool = require('../DB/db');
 
 const ClientModel = {
     create: (data) => {

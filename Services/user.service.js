@@ -1,5 +1,5 @@
 // services/user.service.js
-const UserModel = require('../models/user.model');
+const UserModel = require('../Models/user.model');
 const { hashString, compareHash, signJwt, randomTokenHex, sendEmail, verifyGoogleIdToken, verifyGithubAccessToken } = require('../utils/utils');
 
 const RESET_TOKEN_EXPIRE_MINUTES = parseInt(process.env.RESET_TOKEN_EXPIRE_MINUTES || '60', 10);

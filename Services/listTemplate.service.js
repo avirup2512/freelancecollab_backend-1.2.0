@@ -1,4 +1,4 @@
-const TemplateModel = require("../models/listTemplate.model");
+const TemplateModel = require("../Models/listTemplate.model");
 
 module.exports = {
     saveListAsTemplate: async (userId, listId, name) => {

@@ -1,5 +1,5 @@
 // models/teamInvite.model.js
-const pool = require('../db');
+const pool = require('../DB/db');
 
 function query(q, params = []) {
   return new Promise((res, rej) => {

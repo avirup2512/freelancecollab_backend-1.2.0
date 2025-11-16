@@ -1,7 +1,7 @@
 // services/teamInvite.service.js
-const TeamInviteModel = require('../models/teamInvite.model');
-const TeamModel = require('../models/team.model'); // assumes file exists with getTeamById, getMemberRole, addMember methods
-const UserModel = require('../models/user.model');
+const TeamInviteModel = require('../Models/teamInvite.model');
+const TeamModel = require('../Models/team.member.model'); // assumes file exists with getTeamById, getMemberRole, addMember methods
+const UserModel = require('../Models/user.model');
 const { randomTokenHex, hashString, compareHash, sendEmail } = require('../utils/utils');
 require('dotenv').config();
 

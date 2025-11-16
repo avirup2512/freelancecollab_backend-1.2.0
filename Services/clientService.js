@@ -1,4 +1,4 @@
-const ClientModel = require("../models/ClientModel");
+const ClientModel = require("../Models/clientModel");
 
 const ClientService = {
     async createClient(data) {

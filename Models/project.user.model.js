@@ -1,4 +1,4 @@
-const db = require("../config/db");
+const pool = require('../DB/db');
 
 class ProjectUserModel {
 
