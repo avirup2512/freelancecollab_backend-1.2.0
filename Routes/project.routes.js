@@ -3,7 +3,7 @@ const projectPermission = require("../MiddleWare/project.middleware");
 // routes/project.routes.js
 const express = require('express');
 const router = express.Router();
-const ProjectController = require('../controllers/project.controller');
+const ProjectController = require('../Controllers/project.controller');
 const authMiddleware = require('../MiddleWare/auth');
 // optional role middleware: const { requireRole } = require('../middleware/teamRoleMiddleware');
 
