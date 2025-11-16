@@ -1,4 +1,4 @@
-const teamService = require('../services/team.service');
+const teamService = require('../Services/team.service');
 const response = require('../Class/response');
 const error = require('../Class/error');
 

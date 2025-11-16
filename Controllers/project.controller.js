@@ -1,5 +1,5 @@
 // controllers/project.controller.js
-const ProjectService = require('../services/project.service');
+const ProjectService = require('../Services/project.service');
 
 const ProjectController = {
   createProject: async (req, res) => {

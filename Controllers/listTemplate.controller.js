@@ -1,4 +1,4 @@
-const service = require("../services/listTemplate.service");
+const service = require("../Services/listTemplate.service");
 
 module.exports = {
     createTemplate: async (req, res) => {

@@ -1,5 +1,5 @@
 // controllers/list.controller.js
-const ListService = require('../services/list.service');
+const ListService = require('../Services/list.service');
 
 const ListController = {
   create: async (req, res) => {

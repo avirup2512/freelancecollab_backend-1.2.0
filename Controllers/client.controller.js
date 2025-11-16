@@ -1,4 +1,4 @@
-const ClientService = require("../services/ClientService");
+const ClientService = require("../Services/clientService");
 
 const ClientController = {
     async create(req, res) {
