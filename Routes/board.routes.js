@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const BoardController = require("../Controllers/board.controller");
 const auth = require("../MiddleWare/auth");
-const boardPermission = require("../Middleware/board.middleware");
+const boardPermission = require("../MiddleWare/board.middleware");
 
 // CREATE
 router.post("/", auth, BoardController.create);
