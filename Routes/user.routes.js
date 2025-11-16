@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const UserController = require('../Controllers/user.controller');
 const createRateLimiter = require('../MiddleWare/rateLimiter');
-const authMiddleware = require('../Middleware/auth');
+const authMiddleware = require('../MiddleWare/auth');
 const checkJWT = require('../Middleware/JWT');
 // config limiters
 const loginLimiter = createRateLimiter({ windowMs: 10 * 60 * 1000, max: 5, message: 'Too many login attempts. Try again later.' });
