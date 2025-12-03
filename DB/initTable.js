@@ -114,6 +114,9 @@ async function initTables() {
 
     try {
       console.log(`⏳ Creating table: ${key}`);
+      console.log(process.env.DB_NAME);
+      console.log(process.env.DB_PASSWORD);
+      
       await sqlquery(query,[]);
       console.log(`✅ ${key} created`);
     } catch (err) {
