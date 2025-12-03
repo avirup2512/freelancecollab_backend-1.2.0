@@ -31,7 +31,7 @@ const UserController = {
       if (!uniqueIdentifier) return res.status(400).json({ success: false, message: 'uniqueIdentifier required' });
 
       const result = await UserService.socialLoginWithGoogle(uniqueIdentifier);
-      return res.json({ success: true, user: result.user, token: result.token, created: result.created });
+      return res.json({ success: true,status:200, user: result.user, token: result.token, created: result.created });
     } catch (err) {
       console.error(err);
       return res.status(err.status || 500).json({ success: false, message: err.message || 'Server error' });
