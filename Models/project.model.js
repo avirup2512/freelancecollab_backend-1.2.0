@@ -1,10 +1,10 @@
-// models/project.model.js
-const pool = require('../DB/db');
+const connection = require('../DB/db');
+const mysql = require('mysql');
 
-function query(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    pool.query(sql, params, (err, results) => (err ? reject(err) : resolve(results)));
-  });
+function query(q, params = []) {
+    let con = new connection(mysql);
+    let connectionObject = con.getConnection();
+    return con.queryByArray(connectionObject, q, params)
 }
 
 // Helper to run transactional work using a connection
@@ -39,7 +39,7 @@ function withTransaction(work) {
 const ProjectModel = {
   // CRUD on project
   createProject: (project) =>
-    query(`INSERT INTO project (name, description, user_id, is_public) VALUES (?, ?, ?, ?)`, [
+    query(`INSERT INTO projects (name, description, user_id, is_public) VALUES (?, ?, ?, ?)`, [
       project.name,
       project.description || null,
       project.user_id,
@@ -48,16 +48,25 @@ const ProjectModel = {
 
   updateProject: (projectId, data) =>
     query(
-      `UPDATE project SET name = COALESCE(?, name), description = COALESCE(?, description), is_public = COALESCE(?, is_public) WHERE id = ?`,
+      `UPDATE projects SET name = COALESCE(?, name), description = COALESCE(?, description), is_public = COALESCE(?, is_public) WHERE id = ?`,
       [data.name, data.description, typeof data.is_public === 'boolean' ? (data.is_public ? 1 : 0) : null, projectId]
     ),
 
-  setArchiveFlag: (projectId, flag = 1) => query(`UPDATE project SET is_archived = ? WHERE id = ?`, [flag ? 1 : 0, projectId]),
+  setArchiveFlag: (projectIds, flag = 1) => {
+    const value = flag ? 1 : 0;
+    if (Array.isArray(projectIds)) {
+      if (!projectIds.length) return Promise.resolve();
+      const placeholders = projectIds.map(() => '?').join(',');
+      const params = [value, ...projectIds];
+      return query(`UPDATE projects SET is_archived = ? WHERE id IN (${placeholders})`, params);
+    }
+    return query(`UPDATE projects SET is_archived = ? WHERE id = ?`, [value, projectIds]);
+  },
 
   deleteProject: (projectId) => query(`DELETE FROM project WHERE id = ?`, [projectId]),
 
   getProjectById: (projectId) =>
-    query(`SELECT * FROM project WHERE id = ? LIMIT 1`, [projectId]).then((r) => r[0] || null),
+    query(`SELECT * FROM projects WHERE id = ? LIMIT 1`, [projectId]).then((r) => r[0] || null),
 
   // project_user operations
   addUserToProject: (projectId, userId, roleId = null, isDefault = 0, conn = null) => {
@@ -124,8 +133,8 @@ const ProjectModel = {
     query(
       `SELECT p.*, 
               (SELECT COUNT(*) FROM project_board pb WHERE pb.project_id = p.id) AS board_count,
-              (SELECT JSON_ARRAYAGG(JSON_OBJECT('board_id', b.id, 'board_name', b.name)) FROM project_board pb JOIN board b ON b.id = pb.board_id WHERE pb.project_id = p.id) AS boards
-       FROM project p
+              (SELECT JSON_ARRAYAGG(JSON_OBJECT('board_id', b.id, 'board_name', b.name)) FROM project_board pb JOIN boards b ON b.id = pb.board_id WHERE pb.project_id = p.id) AS boards
+       FROM projects p
        WHERE p.is_archived = ? AND p.is_deleted = 0
        ORDER BY p.created_date DESC
        LIMIT ? OFFSET ?`,

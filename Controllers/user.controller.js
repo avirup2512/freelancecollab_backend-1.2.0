@@ -6,7 +6,7 @@ const UserController = {
     try {
       const { first_name, last_name, email, password, address } = req.body;
       const result = await UserService.register({ first_name, last_name, email, password, address });
-      return res.json({ success: true, user: result.user, token: result.token });
+      return res.json({ success: true, user: result.user, token: result.token, status:200 });
     } catch (err) {
       console.error(err);
       return res.status(err.status || 500).json({ success: false, message: err.message || 'Server error' });

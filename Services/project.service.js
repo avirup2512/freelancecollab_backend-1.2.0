@@ -32,8 +32,14 @@ const ProjectService = {
   },
 
   // 3) Archive Project
-  archiveProject: async (projectId) => {
-    await ProjectModel.setArchiveFlag(projectId, 1);
+  archiveProject: async (projectIdOrIds, flag = 1) => {
+    if (Array.isArray(projectIdOrIds)) {
+      if (!projectIdOrIds.length) throw { status: 400, message: 'projectIds required' };
+      await ProjectModel.setArchiveFlag(projectIdOrIds, flag);
+      return { projectIds: projectIdOrIds, archived: true };
+    }
+    const projectId = parseInt(projectIdOrIds, 10);
+    await ProjectModel.setArchiveFlag(projectId, flag);
     return { projectId, archived: true };
   },
 

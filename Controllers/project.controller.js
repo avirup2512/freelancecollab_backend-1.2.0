@@ -7,7 +7,7 @@ const ProjectController = {
       const payload = req.body;
       payload.user_id = req.user.id; // creator
       const r = await ProjectService.createProject(payload);
-      res.json({ success: true, data: r });
+      res.json({ success: true, data: r, status:200 });
     } catch (err) {
       console.error(err);
       res.status(err.status || 500).json({ success: false, message: err.message || 'Server error' });
@@ -18,7 +18,7 @@ const ProjectController = {
     try {
       const projectId = parseInt(req.params.projectId, 10);
       const r = await ProjectService.editProject(projectId, req.body);
-      res.json({ success: true, data: r });
+      res.json({ success: true, data: r ,status:200});
     } catch (err) {
       console.error(err);
       res.status(err.status || 500).json({ success: false, message: err.message || 'Server error' });
@@ -27,9 +27,11 @@ const ProjectController = {
 
   archiveProject: async (req, res) => {
     try {
-      const projectId = parseInt(req.params.projectId, 10);
-      const r = await ProjectService.archiveProject(projectId);
-      res.json({ success: true, data: r });
+      const { projectId, projectIds, archive } = req.body || {};
+      const target = Array.isArray(projectIds) ? projectIds : (projectId !== undefined ? parseInt(projectId, 10) : null);
+      if (!target || (Array.isArray(target) && !target.length)) throw { status: 400, message: 'projectId or projectIds required' };
+      const r = await ProjectService.archiveProject(target, archive);
+      res.json({ success: true, data: r,status:200 });
     } catch (err) {
       console.error(err);
       res.status(err.status || 500).json({ success: false, message: err.message || 'Server error' });
@@ -184,7 +186,7 @@ const ProjectController = {
       const offset = parseInt(req.query.offset || '0', 10);
       const limit = parseInt(req.query.limit || '20', 10);
       const r = await ProjectService.getArchivedProjectsPaginated(offset, limit);
-      res.json({ success: true, data: r });
+      res.json({ success: true, data: r, status:200 });
     } catch (err) {
       console.error(err);
       res.status(err.status || 500).json({ success: false, message: err.message || 'Server error' });
@@ -196,7 +198,7 @@ const ProjectController = {
       const offset = parseInt(req.query.offset || '0', 10);
       const limit = parseInt(req.query.limit || '20', 10);
       const r = await ProjectService.getActiveProjectsPaginated(offset, limit);
-      res.json({ success: true, data: r });
+      res.json({ success: true, data: r, status:200 });
     } catch (err) {
       console.error(err);
       res.status(err.status || 500).json({ success: false, message: err.message || 'Server error' });
