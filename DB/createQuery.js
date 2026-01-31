@@ -74,7 +74,7 @@ const createQuery = {
       role_id INT,
       is_default INT,
       FOREIGN KEY (user_id) REFERENCES users(id),
-      FOREIGN KEY (role_id) REFERENCES roles(id),
+      FOREIGN KEY (role_id) REFERENCES project_roles(id),
       FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
       UNIQUE (user_id, project_id)
     );

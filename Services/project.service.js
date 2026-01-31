@@ -7,6 +7,17 @@ const ProjectService = {
     const res = await ProjectModel.createProject({ name, description, user_id, is_public });
     const projectId = res.insertId;
 
+    // Add creator as a project user
+    // Note: Get the admin role ID from project_roles table (usually id=1 for 'admin')
+    try {
+      // Get admin role ID from project_roles (usually id=1, but query to be safe)
+      const ProjectModel_ref = require('../Models/project.model');
+      await ProjectModel.addUserToProject(projectId, user_id, 1, 1); // roleId=1 (admin), isDefault=1
+    } catch (err) {
+      console.error('Error adding creator to project_user:', err);
+      // Continue - project is created, this is non-critical
+    }
+
     // if initialBoards supplied (array of {name, user_id}) create board rows then link
     if (initialBoards && initialBoards.length) {
       await ProjectModel.withTransaction(async (conn) => {

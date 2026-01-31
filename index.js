@@ -138,9 +138,16 @@ app.use((err, req, res, next) => {
 // -------------------------
 const PORT = process.env.PORT || 4200;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
 });
-    
-initTables();
+
+// Initialize tables only once on startup (optional - tables already exist with IF NOT EXISTS)
+if (process.env.INIT_TABLES) {
+    initTables().catch(err => {
+        console.error("Failed to initialize tables:", err);
+        process.exit(1);
+    });
+}
+
 module.exports = app;
