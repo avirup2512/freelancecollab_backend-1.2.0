@@ -31,11 +31,11 @@ const orderedTables = [
 
   // 4) User <-> Role <-> Project relations
   "createUserRoleTable",
-  "createProjectUserTable",
-
+  
   // 6) Team <-> Project mapping
   "createProjectTeam",
   "createProjectRoles",
+  "createProjectUserTable",
   "createProjectTeamRoleMap",   // depends on project_roles + team_roles
   "createBoardTeamRoleMap",     // depends on board_roles + team_roles
 

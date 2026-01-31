@@ -63,7 +63,15 @@ const ProjectModel = {
     return query(`UPDATE projects SET is_archived = ? WHERE id = ?`, [value, projectIds]);
   },
 
-  deleteProject: (projectId) => query(`DELETE FROM project WHERE id = ?`, [projectId]),
+  deleteProject: (projectIds) => {
+    if (Array.isArray(projectIds)) {
+      if (!projectIds.length) return Promise.resolve();
+      const placeholders = projectIds.map(() => '?').join(',');
+      const params = [1, ...projectIds];
+      return query(`UPDATE projects SET is_deleted = ? WHERE id IN (${placeholders})`, params);
+    }
+    return query(`UPDATE projects SET is_deleted = 1 WHERE id = ?`, [projectIds]);
+  },
 
   getProjectById: (projectId) =>
     query(`SELECT * FROM projects WHERE id = ? LIMIT 1`, [projectId]).then((r) => r[0] || null),
@@ -161,6 +169,9 @@ const ProjectModel = {
       conn.query(sql, [values], (err, r) => (err ? rej(err) : res(r)));
     });
   },
+
+  getProjectRoleByName: (roleName) =>
+    query(`SELECT id, role_name FROM project_roles WHERE role_name = ? LIMIT 1`, [roleName]).then((r) => r[0] || null),
 
   withTransaction,
 };

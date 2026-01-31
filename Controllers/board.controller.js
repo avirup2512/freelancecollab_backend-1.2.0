@@ -4,6 +4,8 @@ class BoardController {
 
     static async create(req, res) {
         try {
+            const created_by = req.user.id;
+            req.body.created_by = created_by;
             const response = await BoardService.createBoard(req.body);
             res.json(response);
         } catch (e) { res.status(500).json({ error: e.message }); }
@@ -62,11 +64,11 @@ class BoardController {
     }
 
     static async getActiveBoards(req, res) {
-        try {
+        try {            
             const data = await BoardService.getActiveBoards(
                 req.params.projectId,
-                req.query.limit,
-                req.query.offset
+                req.params.limit,
+                req.params.offset
             );
             res.json(data);
         } catch (e) { res.status(500).json({ error: e.message }); }
@@ -81,6 +83,27 @@ class BoardController {
             );
             res.json(data);
         } catch (e) { res.status(500).json({ error: e.message }); }
+    }
+
+    static async getAllBoardsByProjectId(req, res) {
+        try {
+            let projectId = req.params.projectId;
+            const projectIdInt = parseInt(projectId, 10);
+            if (isNaN(projectIdInt)) {
+                throw new Error("Invalid project ID");
+            }
+            const userId = req.user.id;
+            const isArchived = req.params.isArchived !== undefined ? (req.params.isArchived === '1' || req.params.isArchived === 'true') : null;
+            const limit = req.params.limit || 20;
+            const offset = req.params.offset || 0;
+            const data = await BoardService.getAllBoardsByProjectId(projectIdInt, userId, isArchived, limit, offset);
+            res.json(data);
+        } catch (err) {
+            res.status(err.status || 500).json({ 
+                success: false, 
+                message: err.message || 'Error fetching boards' 
+            });
+        }
     }
 }
 

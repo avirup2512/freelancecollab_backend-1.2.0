@@ -129,13 +129,15 @@ createTeamRole: `
       user_id INT,
       name VARCHAR(255),
       create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+      created_by INT,
       is_public BOOLEAN DEFAULT FALSE,
       project_id INT,
       is_archived INT DEFAULT 0,
       is_active INT DEFAULT 1,
       is_deleted INT DEFAULT 0,
       FOREIGN KEY (user_id) REFERENCES users(id),
-      FOREIGN KEY (project_id) REFERENCES projects(id)
+      FOREIGN KEY (project_id) REFERENCES projects(id),
+      FOREIGN KEY (created_by) REFERENCES users(id)
     );
   `,
 

@@ -6,7 +6,7 @@ const ListController = {
     try {
       const payload = { ...req.body, created_by: req.user.id };
       const r = await ListService.createList(payload);
-      res.json({ success: true, data: r });
+      res.json({ success: true, data: r, status:200 });
     } catch (err) { console.error(err); res.status(err.status || 500).json({ success: false, message: err.message || 'Server error' }); }
   },
 
@@ -81,7 +81,7 @@ const ListController = {
     try {
       const boardId = parseInt(req.params.boardId, 10);
       const r = await ListService.getActiveListsByBoard(boardId);
-      res.json({ success: true, data: r });
+      res.json({ success: true, data: r, status:200 });
     } catch (err) { console.error(err); res.status(500).json({ success:false, message: err.message }) }
   },
 

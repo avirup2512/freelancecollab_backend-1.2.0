@@ -24,8 +24,8 @@ router.put('/:listId/wip', authMiddleware, ListController.setWip);
 router.put('/:listId/color', authMiddleware, ListController.changeColor);
 
 // Get lists joined with cards
-router.get('/board/:boardId/active', authMiddleware, ListController.getActiveByBoard);
-router.get('/board/:boardId/archived', authMiddleware, ListController.getArchivedByBoard);
+router.get('/getAllList/:boardId/:isactive/:filterType', authMiddleware, ListController.getActiveByBoard);
+router.get('/getAllList/:boardId/:isactive/:filterType', authMiddleware, ListController.getArchivedByBoard);
 
 // Advanced
 router.post('/:listId/duplicate', authMiddleware, ListController.duplicateList);

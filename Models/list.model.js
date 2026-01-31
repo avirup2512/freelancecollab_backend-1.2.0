@@ -1,11 +1,12 @@
-// models/list.model.js
-const pool = require('../DB/db');
+const connection = require('../DB/db');
+const mysql = require('mysql');
 
 function query(q, params = []) {
-  return new Promise((resolve, reject) => {
-    pool.query(q, params, (err, results) => (err ? reject(err) : resolve(results)));
-  });
+    let con = new connection(mysql);
+    let connectionObject = con.getConnection();
+    return con.queryByArray(connectionObject, q, params)
 }
+
 
 function withTransaction(work) {
   return new Promise((resolve, reject) => {
@@ -31,10 +32,12 @@ function withTransaction(work) {
 
 const ListModel = {
   create: (payload, conn = null) => {
+    console.log(payload);
+    
     const sql = `INSERT INTO \`list\` (board_id, name, position, is_backlog, backlog_activate_at, is_active, is_locked, is_collapsed, wip_limit, color, created_by)
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     const params = [
-      payload.board_id, payload.name, payload.position || 0,
+      payload.boardId, payload.name, payload.position || 0,
       payload.is_backlog ? 1 : 0,
       payload.backlog_activate_at || null,
       payload.is_active == null ? 1 : (payload.is_active ? 1 : 0),
@@ -90,15 +93,29 @@ const ListModel = {
           'priority_id', c.priority_id, 'assigned_user_id', c.user_id
         )) FILTER (WHERE c.id IS NOT NULL), JSON_ARRAY()) AS cards
       FROM \`list\` l
-      LEFT JOIN card c ON c.list_id = l.id AND c.is_deleted = 0
+      LEFT JOIN cards c ON c.list_id = l.id AND c.is_deleted = 0
       WHERE l.board_id = ? AND l.is_archived = 0 AND l.is_deleted = 0 AND l.is_active = 1
       GROUP BY l.id
       ORDER BY l.position ASC`;
     // Note: MySQL < 8 lacks FILTER; simpler approach below
     const fallback = `
       SELECT l.*, 
-        (SELECT JSON_ARRAYAGG(JSON_OBJECT('id',c.id,'name',c.name,'is_complete',c.is_complete,'due_date',DATE_FORMAT(c.due_date,'%Y-%m-%d %H:%i:%s'),'priority_id',c.priority_id,'assigned_user_id',c.user_id))
-         FROM card c WHERE c.list_id = l.id AND c.is_deleted = 0) AS cards
+        (
+          SELECT IFNULL(JSON_ARRAYAGG(JSON_OBJECT(
+            'id', c.id,
+            'name', c.name,
+            'description', c.description,
+            'is_complete', c.is_complete,
+            'due_date', DATE_FORMAT(c.due_date, '%Y-%m-%d %H:%i:%s'),
+            'priority_id', c.priority_id,
+            'assigned_user_id', c.user_id,
+            'users', IFNULL((SELECT JSON_ARRAYAGG(JSON_OBJECT('user_id', cu.user_id, 'role_id', cu.role_id, 'first_name', u.first_name, 'email', u.email))
+            FROM card_user cu LEFT JOIN users u ON u.id = cu.user_id WHERE cu.card_id = c.id), JSON_ARRAY()),
+            'tags', IFNULL((SELECT JSON_ARRAYAGG(JSON_OBJECT('id', ct.id, 'board_tag_id', ct.board_tag_id, 'name', bt.name, 'color', bt.color))
+            FROM card_tag ct LEFT JOIN board_tag bt ON bt.id = ct.board_tag_id WHERE ct.card_id = c.id), JSON_ARRAY())
+          )), JSON_ARRAY())
+          FROM cards c WHERE c.list_id = l.id AND c.is_deleted = 0
+        ) AS cards
       FROM \`list\` l
       WHERE l.board_id = ? AND l.is_archived = 0 AND l.is_deleted = 0 AND l.is_active = 1
       ORDER BY l.position ASC`;
@@ -108,8 +125,22 @@ const ListModel = {
   getArchivedByBoard: (boardId) => {
     const sql = `
       SELECT l.*, 
-        (SELECT JSON_ARRAYAGG(JSON_OBJECT('id', c.id, 'name', c.name, 'is_complete', c.is_complete, 'due_date', DATE_FORMAT(c.due_date, '%Y-%m-%d %H:%i:%s')))
-         FROM card c WHERE c.list_id = l.id) AS cards
+        (
+          SELECT IFNULL(JSON_ARRAYAGG(JSON_OBJECT(
+            'id', c.id,
+            'name', c.name,
+            'description', c.description,
+            'is_complete', c.is_complete,
+            'due_date', DATE_FORMAT(c.due_date, '%Y-%m-%d %H:%i:%s'),
+            'priority_id', c.priority_id,
+            'assigned_user_id', c.user_id,
+            'users', IFNULL((SELECT JSON_ARRAYAGG(JSON_OBJECT('user_id', cu.user_id, 'role_id', cu.role_id, 'first_name', u.first_name, 'email', u.email))
+            FROM card_user cu LEFT JOIN users u ON u.id = cu.user_id WHERE cu.card_id = c.id), JSON_ARRAY()),
+            'tags', IFNULL((SELECT JSON_ARRAYAGG(JSON_OBJECT('id', ct.id, 'board_tag_id', ct.board_tag_id, 'name', bt.name, 'color', bt.color))
+            FROM card_tag ct LEFT JOIN board_tag bt ON bt.id = ct.board_tag_id WHERE ct.card_id = c.id), JSON_ARRAY())
+          )), JSON_ARRAY())
+          FROM cards c WHERE c.list_id = l.id
+        ) AS cards
       FROM \`list\` l
       WHERE l.board_id = ? AND l.is_archived = 1 AND l.is_deleted = 0
       ORDER BY l.position ASC`;

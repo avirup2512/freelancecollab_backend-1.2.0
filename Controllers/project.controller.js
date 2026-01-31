@@ -40,9 +40,19 @@ const ProjectController = {
 
   deleteProject: async (req, res) => {
     try {
-      const projectId = parseInt(req.params.projectId, 10);
+      console.log(req.body);
+      
+      let projectId = req.body.projectId;
+      // Handle both single ID and array of IDs
+      if (Array.isArray(projectId)) {
+        projectId = projectId.map(id => parseInt(id, 10));
+      } else {
+        projectId = parseInt(projectId, 10);
+      }
+      console.log(projectId);
+      
       const r = await ProjectService.deleteProject(projectId);
-      res.json({ success: true, data: r });
+      res.json({ success: true, data: r, status: 200 });
     } catch (err) {
       console.error(err);
       res.status(err.status || 500).json({ success: false, message: err.message || 'Server error' });

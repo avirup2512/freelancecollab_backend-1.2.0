@@ -56,7 +56,23 @@ class BoardService {
     }
 
     static async getActiveBoards(projectId, limit, offset) {
+        limit = parseInt(limit, 10) || 20;
+        offset = parseInt(offset, 10) || 0;
         return await BoardModel.getBoardsByArchive(projectId, 0, limit, offset);
+    }
+
+    static async getAllBoardsByProjectId(projectId, userId, isArchived = null, limit = 20, offset = 0) {
+        if (!projectId || !userId) {
+            throw { status: 400, message: 'Project ID and User ID are required' };
+        }
+        try {
+            limit = parseInt(limit, 10) || 20;
+            offset = parseInt(offset, 10) || 0;
+            const boards = await BoardModel.getAllBoardsByProjectId(projectId, userId, isArchived, limit, offset);
+            return { success: true, boards, count: boards.length, status:200 };
+        } catch (err) {
+            throw { status: 403, message: err.message || 'Unauthorized access' };
+        }
     }
 }
 

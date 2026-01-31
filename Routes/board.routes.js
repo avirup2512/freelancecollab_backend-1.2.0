@@ -3,6 +3,22 @@ const BoardController = require("../Controllers/board.controller");
 const auth = require("../MiddleWare/auth");
 const boardPermission = require("../MiddleWare/board.middleware");
 
+// PAGINATION
+router.get("/getAllBoard/active/:projectId/:limit/:offset",
+    auth,
+    BoardController.getAllBoardsByProjectId
+);
+
+router.get("/getAllBoard/:projectId/archived/:limit/:offset",
+    auth,
+    BoardController.getAllBoardsByProjectId
+);
+
+// GET ALL BOARDS BY PROJECT ID (with auth check)
+router.get("/project/:projectId",
+    auth,
+    BoardController.getAllBoardsByProjectId
+);
 // CREATE
 router.post("/", auth, BoardController.create);
 
@@ -48,15 +64,5 @@ router.get("/:boardId",
     BoardController.getBoardWithLists
 );
 
-// PAGINATION
-router.get("/project/:projectId/active",
-    auth,
-    BoardController.getActiveBoards
-);
-
-router.get("/project/:projectId/archived",
-    auth,
-    BoardController.getArchiveBoards
-);
 
 module.exports = router;

@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const rateLimit = require("express-rate-limit");
 const path = require("path");
 const initTables = require("./DB/initTable");
+const seedAllData = require("./DB/seedData");
 // MySQL DB connection initializer
 // require("../src/db/connection");
 
@@ -63,8 +64,8 @@ const listStateRoutes = require("./Routes/list.routes");
 
 // CATEGORY MODULE
 const categoryRoutes = require("./Routes/category.routes");
-// CARD MODULE (if required)
-// const cardRoutes = require("./Routes/card.routes");
+// CARD MODULE
+const cardRoutes = require("./Routes/card.routes");
 
 // -------------------------
 // ROUTER MOUNTING
@@ -104,7 +105,7 @@ app.use("/list-state", listStateRoutes);
 // Category
 app.use("/category", categoryRoutes);
 // Cards
-// app.use("/card", cardRoutes);
+app.use("/card", cardRoutes);
 
 // -------------------------
 // STATIC FILES IF NEEDED
@@ -142,12 +143,12 @@ const server = app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
 });
 
-// Initialize tables only once on startup (optional - tables already exist with IF NOT EXISTS)
-if (process.env.INIT_TABLES) {
-    initTables().catch(err => {
-        console.error("Failed to initialize tables:", err);
+// Initialize tables and seed data
+initTables()
+    .then(() => seedAllData())
+    .catch(err => {
+        console.error("Failed to initialize tables or seed data:", err);
         process.exit(1);
     });
-}
 
 module.exports = app;

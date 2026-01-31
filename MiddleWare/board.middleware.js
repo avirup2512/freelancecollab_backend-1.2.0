@@ -1,23 +1,29 @@
-const db = require("../DB/db");
+const connection = require('../DB/db');
+const mysql = require('mysql');
+
+function query(q, params = []) {
+    let con = new connection(mysql);
+    let connectionObject = con.getConnection();
+    return con.queryByArray(connectionObject, q, params)
+}
+
 
 module.exports = function (allowedRoles = []) {
 
-    return (req, res, next) => {
+    return async (req, res, next) => {
         const boardId = req.params.boardId || req.body.boardId;
         const userId = req.user.id;
 
         if (!boardId) return res.status(400).json({ error: "Board ID missing" });
 
         const sql = `
-            SELECT br.role_name
+            -- board_users does not store the role name directly; join to board_roles
+            SELECT br.role_name AS role_name
             FROM board_users bu
             JOIN board_roles br ON bu.role_id = br.id
             WHERE bu.board_id = ? AND bu.user_id = ?
         `;
-
-        db.query(sql, [boardId, userId], (err, rows) => {
-            if (err) return res.status(500).json({ error: err.message });
-
+            const rows = await query(sql, [boardId, userId]);
             if (!rows.length)
                 return res.status(403).json({ error: "You are not a member of this board" });
 
@@ -27,6 +33,5 @@ module.exports = function (allowedRoles = []) {
                 return next();
 
             return res.status(403).json({ error: "Permission denied" });
-        });
     };
 };
