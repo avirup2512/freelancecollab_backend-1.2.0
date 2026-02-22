@@ -47,7 +47,7 @@ const TaskGridModel = {
   findById: (id) => query(`SELECT * FROM task_grid WHERE id = ? LIMIT 1`, [id]).then(r => r[0] || null),
 
   getByTask: (taskId) => {
-    const sql = `SELECT tg.*, ute.date, ute.entry, ute.task as taskID,utem.id as utemId, utem.metadata, utem.parent FROM task_grid tg JOIN user_task_entry ute ON tg.task = ute.task LEFT JOIN user_task_entry_metadata utem ON ute.id = utem.user_task_entry WHERE tg.task = ? ORDER BY id DESC`;
+    const sql = `SELECT tg.*, ute.date, ute.entry, ute.task as taskID,utem.id as utemId, utem.metadata, utem.parent FROM task_grid tg LEFT JOIN user_task_entry ute ON tg.task = ute.task LEFT JOIN user_task_entry_metadata utem ON ute.id = utem.user_task_entry WHERE tg.task = ? ORDER BY id DESC`;
     return query(sql, [taskId]);
   },
 
