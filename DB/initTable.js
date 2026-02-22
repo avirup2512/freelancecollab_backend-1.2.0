@@ -97,7 +97,22 @@ const orderedTables = [
   "createCategoryTable",
 
   // 19) Team Categories
-  "createTeamCategoryTable"
+  "createTeamCategoryTable",
+
+  // 20) Frequency
+  "createFrequencyTable",
+
+  // 21) Task Table
+  "createTaskTable",
+  // 22) Task Grid Table
+  "createTaskGridTable",
+  // 23) Task Grid Entry
+  "createTaskGridEntryTable",
+  // 24) User Task Entry
+  "createUserTaskEntryTable",
+  // 25) User Task Entry Metadata
+  "createUserTaskEntryMetadataTable"
+
 ];
 
 async function initTables() {

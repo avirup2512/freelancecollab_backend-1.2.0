@@ -91,6 +91,33 @@ async function seedBoardRoles() {
         throw err;
     }
 }
+async function seedFrequency(){
+        try {
+        // Check if roles already exist
+        const existing = await query(`SELECT COUNT(*) as count FROM frequency`, []);
+        if (existing[0].count > 0) {
+            console.log("✅ Frequency already seeded");
+            return;
+        }
+
+        const frequency = [
+            ['D'],
+            ['W'],
+            ['M']
+        ];
+
+        for (const [f] of frequency) {
+            await query(
+                `INSERT INTO frequency (frequency) VALUES (?)`,
+                [f]
+            );
+        }
+        console.log("✅ Frequency seeded successfully");
+    } catch (err) {
+        console.error("❌ Error seeding board roles:", err.message);
+        throw err;
+    }
+}
 
 async function seedAllData() {
     try {
@@ -98,6 +125,7 @@ async function seedAllData() {
         await seedProjectRoles();
         // await seedTeamRoles();
         await seedBoardRoles();
+        await seedFrequency();
         console.log("\n✨ All data seeded successfully!\n");
     } catch (err) {
         console.error("Error during seeding:", err);

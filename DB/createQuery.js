@@ -610,7 +610,32 @@ createTeamRole: `
   category_id INT NOT NULL,
   assigned_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE,
-  FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE)`
+  FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE)`,
+  createFrequencyTable: `
+  CREATE TABLE IF NOT EXISTS frequency (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  frequency VARCHAR(255) NOT NULL)`,
+  createTaskTable: `
+  CREATE TABLE IF NOT EXISTS task (
+  id INT AUTO_INCREMENT PRIMARY KEY, creator INT NOT NULL,
+  name VARCHAR(255) NOT NULL, description VARCHAR(255) NOT NULL, frequency INT NOT NULL, FOREIGN KEY (frequency) REFERENCES frequency(id) ON DELETE CASCADE, FOREIGN KEY (creator) REFERENCES users(id) ON DELETE CASCADE)`,
+  createTaskGridTable: `
+  CREATE TABLE IF NOT EXISTS task_grid (
+  id INT AUTO_INCREMENT PRIMARY KEY, start_date DATETIME, end_date DATETIME,
+  task INT NOT NULL, FOREIGN KEY (task) REFERENCES task(id) ON DELETE CASCADE)`,
+  createTaskGridEntryTable: `
+  CREATE TABLE IF NOT EXISTS task_grid_entry (
+  id INT AUTO_INCREMENT PRIMARY KEY, date DATETIME, entry BOOLEAN DEFAULT FALSE,
+  task_grid INT NOT NULL, FOREIGN KEY (task_grid) REFERENCES task_grid(id) ON DELETE CASCADE)`,
+  createUserTaskEntryTable: `
+  CREATE TABLE IF NOT EXISTS user_task_entry (
+  id INT AUTO_INCREMENT PRIMARY KEY, date DATETIME, entry BOOLEAN DEFAULT FALSE,
+  task INT NOT NULL, user INT NOT NULL, FOREIGN KEY (task) REFERENCES task(id) ON DELETE CASCADE,
+  FOREIGN KEY (user) REFERENCES users(id) ON DELETE CASCADE)`,
+  createUserTaskEntryMetadataTable: `
+  CREATE TABLE IF NOT EXISTS user_task_entry_metadata (
+  id INT AUTO_INCREMENT PRIMARY KEY, metadata VARCHAR(255) NOT NULL,
+  user_task_entry INT NOT NULL, parent INT NOT NULL, FOREIGN KEY (user_task_entry) REFERENCES user_task_entry(id) ON DELETE CASCADE)`,
 };
 
 module.exports = createQuery;

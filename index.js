@@ -67,6 +67,15 @@ const categoryRoutes = require("./Routes/category.routes");
 // CARD MODULE
 const cardRoutes = require("./Routes/card.routes");
 
+// Task
+const taskRoutes = require("./Routes/task.routes");
+
+// User Task Entry
+const userTaskEntry = require("./Routes/userTaskEntry.routes");
+
+// Task Grid
+const taskGridRoutes = require("./Routes/taskGrid.routes");
+
 // -------------------------
 // ROUTER MOUNTING
 // -------------------------
@@ -106,6 +115,10 @@ app.use("/list-state", listStateRoutes);
 app.use("/category", categoryRoutes);
 // Cards
 app.use("/card", cardRoutes);
+
+app.use("/task", taskRoutes);
+app.use("/userTaskEntry", userTaskEntry);
+app.use("/taskGrid", taskGridRoutes);
 
 // -------------------------
 // STATIC FILES IF NEEDED
