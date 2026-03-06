@@ -78,6 +78,7 @@ const TaskGridService = {
     let taskGridObjectNew = groupByParent(taskGridObject)
     for(var x in taskGridObjectNew)
     {
+      taskMap.clear();
       taskGridObjectNew[x].forEach((e)=>{
         if(e.metadata && taskMap.has(e.metadata))
         {
